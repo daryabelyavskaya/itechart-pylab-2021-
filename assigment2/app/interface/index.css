@@ -1,0 +1,94 @@
+body {
+    background-color:cornsilk;
+    font-size: xxx-large;
+}
+
+h1 {
+    text-align: left;
+    font-size: xx-large;
+
+}
+
+.paginate {
+    margin: 10px;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    transform: translate3d(0, 0, 0);
+    top: 50%;
+    color:burlywood;
+}
+.paginate.left {
+    right: 58%;
+    color: black;
+}
+.paginate.right {
+    left: 58%;
+    color: black;
+}
+.filterform{
+    border-color: black;
+}
+.postcategory{
+    border-color:black;
+}
+.date-min{
+    border-color: black;
+}
+.date-max{
+    border-color: black;
+}
+.numberofvotes-min{
+    border-color: black;
+}
+.numberofvotes-max{
+    border-color: black;
+}
+button {
+    display: inline-block;
+    padding: 5px 8px;
+    font-size: 20px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: #000000;
+    background-color:burlywood;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 9px #999;
+}
+.button.show{
+    height: auto;
+}
+button:hover {background-color: #3418d4}
+
+.body.widgets{
+    height: auto;
+}
+
+button:active {
+    background-color: #8e893e;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
+
+.modal {
+    position: absolute;
+    width: 300px;
+    margin-left: -150px;
+    left: 50%; top: -100%;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #333;
+    z-index: 9999;
+    transition: all 0.5s ease-in;
+}
+.overflow {
+    width: 100%;
+    height: 100%;
+    z-index: 9998;
+    background: rgba(0,0,0,0.7);
+    position: absolute;
+    top: 0;
+} 

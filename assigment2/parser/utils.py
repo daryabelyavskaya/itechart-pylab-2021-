@@ -1,7 +1,10 @@
 import logging
 
-logging.basicConfig(filename="sample.log", level='INFO',
-                    format='[%(asctime)s] %(filename)s: %(levelname)-8s %(message)s')
+logging.basicConfig(
+    filename="sample.log",
+    level='INFO',
+    format='[%(asctime)s] %(filename)s: %(levelname)-8s %(message)s'
+)
 
 
 class Logger:

@@ -7,7 +7,9 @@ class RedditParser:
         self.driver = webdriver.Firefox()
 
     def scroll(self):
-        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        self.driver.execute_script(
+            "window.scrollTo(0, document.body.scrollHeight);"
+        )
 
     def page(self):
         return self.driver.page_source
@@ -37,7 +39,7 @@ class RedditParser:
         return self.driver.execute_script(
             """
             let attr = arguments[0].attributes;
-            let items = {}; 
+            let items = {};
             for (let i = 0; i < attr.length; i++) {
                 items[attr[i].name] = attr[i].value;
             }

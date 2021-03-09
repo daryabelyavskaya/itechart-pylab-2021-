@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>Assigment</title>
+    <link rel="stylesheet" href="index.css">
+
+    <script src='packages/react.development.js'></script>
+    <script src="packages/react-dom.development.js"></script>
+    <script src="packages/babel.min.js"></script>
+    <script src="filter.js"></script>
+    <style>
+        th, td, p, input {
+            font:14px Verdana
+        }
+        table, th, td
+        {   position: relative;
+            border: solid 1px #DDD;
+            border-collapse: collapse;
+            padding: 2px 3px;
+            text-align: center;
+            background-color:burlywood;
+        }
+        th {
+            font-weight:bold;
+        }
+    </style>
+</head>
+<body>
+<h1>Reddit posts</h1>
+<button class="paginate left" class="" >&lt;</button>
+<button class="paginate right">&gt;</button>
+<button class="button show"  >All posts</button>
+<div class="modal">
+    <h1>Filter</h1>
+    <form class="filterform">
+        <input type="text" placeholder="category" class="postcategory" pattern="r/[\w]*"><br>
+        <input type="text" placeholder="date min" class="date-min" pattern="\d{4}-\d{2}-\d{2}">
+        <input type="text" placeholder="date max" class="date-max" pattern="\d{4}-\d{2}-\d{2}"><br>
+        <input type="text" placeholder="number of votes min" class="numberofvotes-min" pattern="\d*">
+        <input type="text" placeholder="number of votes max" class="numberofvotes-max" pattern="\d*"><br>
+        <input type="submit" onclick="filterArgs()" value="OK">
+     </form>
+ </div> 
+<div class="body widgets"></div>
+<script type="text/babel">
+    let state = {
+        buttonOption: false,
+    }
+    let limit=10
+    let offset=0
+    let count_of_posts=0
+    let firstList = []
+    let url= new URL("http://localhost:8087/posts/?limit=10&offset=0")
+    let posts_url= new URL("http://localhost:8087/posts/")
+    //pagination
+    function slide(delta) {
+        offset+=delta
+        if (offset>(count_of_posts-limit))
+            offset=0
+        if(offset<0)
+            offset=(count_of_posts-limit)
+        url.searchParams.set('offset',offset)
+        send_request(url)
+    }      
+    if(!state.buttonOption){
+        let pr = document.querySelector('.paginate.left')
+        let pl = document.querySelector('.paginate.right')
+        pr.onclick = () => slide(-limit )
+        pl.onclick = () => slide( limit )
+        slide(0)
+    } 
+    //filters
+    function send_request(filter_url){
+        let req2 = new XMLHttpRequest()
+        req2.open('GET', filter_url,true )
+        req2.send()
+        req2.onreadystatechange = function() {
+            if(req2.readyState!=4){
+                return
+            }
+            firstList=JSON.parse(req2.responseText)
+            count_of_posts=firstList.length
+            render_page()
+        }   
+    }
+    const form=document.querySelector("filterform")
+    function filterArgs(){
+        let filter_url=new URL(url)
+        if (state.buttonOption){
+        filter_url= new URL(posts_url)
+        }
+        filter_url=getFilterUrl(filter_url)
+        console.log(filter_url)
+        send_request()
+    }
+    let modal = document.querySelector('.modal')
+    let overflow = document.createElement('div')
+    function openWin() {
+        overflow.className = "overflow"
+        document.body.appendChild(overflow)
+        const height = modal.offsetHeight
+        modal.style.marginTop = - height / 2 + "px"
+        modal.style.top = "50%"
+    }
+    if (!Element.prototype.remove) {
+        Element.prototype.remove = function remove() {
+                if (this.parentNode) {
+                        this.parentNode.removeChild(this)
+                }
+        }
+    }
+    overflow.onclick = function () {
+        modal.style.top = "-100%"
+        overflow.remove()
+    } 
+    //showall
+    function getElements(event){
+        limit=10
+        offset=0
+        state.buttonOption = !state.buttonOption
+        send_request(posts_url)
+    }
+    let sendButton= document.querySelector(".button.show")
+    sendButton.addEventListener("click", getElements)
+    //react components
+    const Container = () => {
+        return (
+            <div >
+                <table >
+                    <thead>
+                        <tr>
+                            <th>POST URL</th>
+                            <th>USERNAME</th>
+                            <th>USER KARMA</th>
+                            <th>USER CAKE DAY</th>
+                            <th>POST KARMA</th>
+                            <th>COMMENTS KARMA</th>
+                            <th>POST DATE</th>
+                            <th>NUMBER OF COMMENTS</th>
+                            <th>NUMBER OF VOTES</th>
+                            <th>POST CATEGORY</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    { 
+                        firstList.map((item) =>{
+                        return(
+                            <tr key={item.uniqueId}>
+                                <td>{item.postUrl}</td>
+                                <td>{item.username}</td>
+                                <td>{item.userKarma}</td>
+                                <td>{item.userCakeDay}</td>
+                                <td>{item.postKarma}</td>
+                                <td>{item.commentKarma}</td>
+                                <td>{item.postDate}</td>
+                                <td>{item.numberOfComments}</td>
+                                <td>{item.numberOfVotes}</td>
+                                <td>{item.postCategory}</td>
+                            </tr>
+                        )
+                        }
+                        )
+                    }
+                </tbody>
+                </table>
+            </div>
+        )
+    }
+    const Button = ({onClick}) => {
+        return (
+            <button onClick={onClick}>
+                <div>
+                    Choose filter
+                </div>
+            </button>
+        )
+    }
+    
+    const Wrapper = () => (
+        <div >
+            <Button 
+                onClick={openWin} 
+                />
+            <Container />
+        </div>
+    )
+    function render_page(){
+        ReactDOM.render(
+            <Wrapper/>,
+            document.querySelector('.body.widgets')
+        )
+    }
+</script>
+</body>
+</html>
